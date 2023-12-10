@@ -5,10 +5,13 @@ sources:
         columns:
           - name: tripduration
             data_type: CHARACTER VARYING(256)
+            description: "Time elapsed in the trip"
           - name: starttime
             data_type: CHARACTER VARYING(256)
+            description: "Trip start time"
           - name: stoptime
             data_type: CHARACTER VARYING(256)
+            description: "Trip stop time"
           - name: start station id
             data_type: CHARACTER VARYING(256)
           - name: start station name
@@ -66,6 +69,9 @@ sources:
         columns:
           - name: station
             data_type: CHARACTER VARYING(256)
+            description: "ID of weather station"
+            tests:
+              - dbt_expectations.expect_column_to_exist
           - name: name
             data_type: CHARACTER VARYING(256)
           - name: date
@@ -89,8 +95,13 @@ sources:
         columns:
           - name: base_number
             data_type: CHARACTER VARYING(256)
+            description: "The unique base number of the bases"
+            tests:
+              - unique
+              - dbt_expectations.expect_column_to_exist
           - name: base_name
             data_type: CHARACTER VARYING(256)
+            description: "The name of the base station"
           - name: dba
             data_type: CHARACTER VARYING(256)
           - name: dba_category
@@ -102,6 +113,15 @@ sources:
         columns:
           - name: dispatching_base_num
             data_type: CHARACTER VARYING(256)
+            description: "The base number of the base that dispatched the trip"
+            tests:
+              - dbt_expectations.expect_column_to_exist
+              - not_null
+              - relationships:
+                  to: source('main','fhv_bases')
+                  field: base_number 
+                  config:
+                    severity: warn
           - name: pickup_datetime
             data_type: TIMESTAMP
           - name: dropoff_datetime
@@ -121,24 +141,40 @@ sources:
         columns:
           - name: hvfhs_license_num
             data_type: CHARACTER VARYING(256)
+            description: "The TLC license number of the HVFHS base"
           - name: dispatching_base_num
             data_type: CHARACTER VARYING(256)
+            description: "The base number of the base that dispatched the trip"
           - name: originating_base_num
             data_type: CHARACTER VARYING(256)
+            description: "The base number of the base that received the trip request"
           - name: request_datetime
             data_type: TIMESTAMP
           - name: on_scene_datetime
             data_type: TIMESTAMP
           - name: pickup_datetime
             data_type: TIMESTAMP
+            description: "The date and time of passenger pick-up"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: dropoff_datetime
             data_type: TIMESTAMP
+            description: "The date and time of passenger drop-off"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: pulocationid
             data_type: BIGINT
           - name: dolocationid
             data_type: BIGINT
           - name: trip_miles
             data_type: DOUBLE
+            description: "The recorded trip distance in miles"
+            tests:
+              - dbt_expectations.expect_column_values_to_be_between:
+                  min_value: 0
+                  max_value: 1000
           - name: trip_time
             data_type: BIGINT
           - name: base_passenger_fare
@@ -163,6 +199,13 @@ sources:
             data_type: CHARACTER VARYING(256)
           - name: access_a_ride_flag
             data_type: CHARACTER VARYING(256)
+            description: "Is the trip booked as 'access ride'"
+            data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['Y', 'N']
+                  config:
+                    severity: warn
           - name: wav_request_flag
             data_type: CHARACTER VARYING(256)
           - name: wav_match_flag
@@ -176,36 +219,50 @@ sources:
             data_type: BIGINT
           - name: lpep_pickup_datetime
             data_type: TIMESTAMP
+            description: "Pickup date and time"
           - name: lpep_dropoff_datetime
             data_type: TIMESTAMP
+            description: "Dropoff date and time"
           - name: store_and_fwd_flag
             data_type: CHARACTER VARYING(256)
+            description: "The store and forward flag indidates whether the trip record
+                          was stored in the vehicle's memory before sending to the vendor"
           - name: ratecodeid
             data_type: DOUBLE
           - name: pulocationid
             data_type: BIGINT
+            description: "Pickup location"
           - name: dolocationid
             data_type: BIGINT
+            description: "Dropoff location"
           - name: passenger_count
             data_type: DOUBLE
+            description: "Number of passengers"
           - name: trip_distance
             data_type: DOUBLE
+            description: "The recorded trip distance in miles"
           - name: fare_amount
             data_type: DOUBLE
+            description: "The fare amount recorded by the meter"
           - name: extra
             data_type: DOUBLE
+            description: "Surchage for rush hour or night trip"
           - name: mta_tax
             data_type: DOUBLE
+            description: "MTA tax included with the payment"
           - name: tip_amount
             data_type: DOUBLE
+            description: "Tip amount calulated for electronic payments, cash tip not included"
           - name: tolls_amount
             data_type: DOUBLE
+            description: "Tolls amount paid for the trip"
           - name: ehail_fee
             data_type: INTEGER
           - name: improvement_surcharge
             data_type: DOUBLE
           - name: total_amount
             data_type: DOUBLE
+            description: "Total amount charged including tip (but not cash tips)"
           - name: payment_type
             data_type: DOUBLE
           - name: trip_type
@@ -221,39 +278,54 @@ sources:
             data_type: BIGINT
           - name: tpep_pickup_datetime
             data_type: TIMESTAMP
+            description: "Pickup date and time"
           - name: tpep_dropoff_datetime
             data_type: TIMESTAMP
+            description: "Dropoff date and time"
           - name: passenger_count
             data_type: DOUBLE
+            description: "Number of passengers"
           - name: trip_distance
             data_type: DOUBLE
+            description: "The recorded trip distance in miles"
           - name: ratecodeid
             data_type: DOUBLE
           - name: store_and_fwd_flag
             data_type: CHARACTER VARYING(256)
+            description: "The store and forward flag indidates whether the trip record
+                          was stored in the vehicle's memory before sending to the vendor"
           - name: pulocationid
             data_type: BIGINT
+            description: "Pickup location"
           - name: dolocationid
             data_type: BIGINT
+            description: "Dropoff location"
           - name: payment_type
             data_type: BIGINT
           - name: fare_amount
             data_type: DOUBLE
+            description: "The fare amount recorded by the meter"
           - name: extra
             data_type: DOUBLE
+            description: "Surchage for rush hour or night trip"
           - name: mta_tax
             data_type: DOUBLE
+            description: "MTA tax included with the payment"
           - name: tip_amount
             data_type: DOUBLE
+            description: "Tip amount calulated for electronic payments, cash tip not included"
           - name: tolls_amount
             data_type: DOUBLE
+            description: "Tolls amount paid for the trip"
           - name: improvement_surcharge
             data_type: DOUBLE
           - name: total_amount
             data_type: DOUBLE
+            description: "Total amount charged including tip (but not cash tips)"
           - name: congestion_surcharge
             data_type: DOUBLE
           - name: airport_fee
             data_type: DOUBLE
+            description: "Fee for pick up at JFK and LaGuardia Airports"
           - name: filename
             data_type: CHARACTER VARYING(256)
