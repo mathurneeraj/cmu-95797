@@ -28,7 +28,8 @@ renamed as (
         filename
 
     from source
-        where trip_distance >= 0 -- only pick trips with positive trip distance
+        where lpep_pickup_datetime < TIMESTAMP '2022-12-31' -- drop rows in the future
+            and trip_distance >= 0 -- only pick trips with positive trip distance
 
 )
 

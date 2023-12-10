@@ -20,4 +20,13 @@ renamed as (
 
 )
 
-select * from renamed
+select 
+    date,
+    awnd,
+    prcp,
+    snow,
+    snwd,
+    tmax,
+    tmin,
+    filename
+from renamed

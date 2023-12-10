@@ -10,7 +10,7 @@ renamed as (
         dropoff_datetime,
         pulocationid,
         dolocationid,
-        {{convert_flag_to_bool("sr_flag")}} as sr_flag,
+        --sr_flag, always null so chuck it
         affiliated_base_number,
         filename
 
