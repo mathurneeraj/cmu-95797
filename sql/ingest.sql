@@ -13,7 +13,8 @@ CREATE TABLE central_park_weather AS SELECT * FROM read_csv_auto('./data/central
 -- Create fhv_bases table and read "fhv_bases.csv" CSV file to load location data into fhv_bases table.
 -- Here columns are merged by name
 -- The CSV data is stored as strings
-CREATE TABLE fhv_bases AS SELECT * FROM read_csv_auto('./data/fhv_bases.csv', union_by_name=True, filename=True, all_varchar=1);
+-- Note: header is added to ensure that column names are correctly picked
+CREATE TABLE fhv_bases AS SELECT * FROM read_csv_auto('./data/fhv_bases.csv', union_by_name=True, filename=True, all_varchar=1, header=True);
 
 -- Read all parquet files to load trip and taxi data into respective tables
 -- Here columns are merged by name
